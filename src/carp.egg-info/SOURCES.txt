@@ -1,0 +1,7 @@
+README
+setup.py
+src/carp.egg-info/PKG-INFO
+src/carp.egg-info/SOURCES.txt
+src/carp.egg-info/dependency_links.txt
+src/carp.egg-info/requires.txt
+src/carp.egg-info/top_level.txt
