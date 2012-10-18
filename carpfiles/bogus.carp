@@ -1,0 +1,5 @@
+This is a bogus template.
+
+aaa is {{ aaa }}.
+
+bbb is {{ bbb }}.

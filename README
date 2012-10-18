@@ -5,30 +5,30 @@ Carp
 Carp is for code templates.  It cuts down on typing, so you won't get
 CARP-al tunnel.  Harharhar.
 
-Examples
-========
+Stuff that works right now
+==========================
 
-carp --define foo=matt --define bar=robot cliscript
+This really works::
 
-    Merges the template named cliscript with the definitions from the
-    command-line.
+    $ python src/carp.py carpfiles/bogus.carp --define aaa=cat bbb=dog
 
-    You either need to provide the path to the cliscript or it needs to
-    be one of the stored templates.
+That will put replace aaa with cat and bbb with dog.
 
-carp-list
-    lists stored templates
+Possible improvements
+=====================
 
-carp-store template-file
-    stores a template
+*   Install carp as a script in the path (edit setup.py).
 
-carp-inspect-template cliscript
-    dumps out the template and lists the required keys.
+*   List required variables for a carpfile.
 
-Status
-======
+*   Find carpfiles folder by searching up parent folders.
 
-vaporware.
+*   List carp templates inside the carpfiles folder.
 
+*   Store templates into the carpfiles folder (i.e., register
+    carpfiles, with descriptions, etc).
+
+*   Build projects with folders and files rather than just a single
+    file.
 
 .. vim: set syntax=rst:

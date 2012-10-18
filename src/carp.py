@@ -26,7 +26,7 @@ def set_up_arguments():
 
     ap = argparse.ArgumentParser()
 
-    ap.add_argument('-D', '--define', nargs="+", metavar="N")
+    ap.add_argument('-D', '--define', nargs="+", default=[])
 
     ap.add_argument(
         'carpfile',
@@ -42,7 +42,8 @@ if __name__ == '__main__':
 
     defined_values = dict([s.split('=') for s in args.define])
 
-    j = jinja2.Template(args.carpfile.read())
+    j = jinja2.Template(args.carpfile.read(),
+        undefined=jinja2.StrictUndefined)
 
     print(j.render(**defined_values))
 
