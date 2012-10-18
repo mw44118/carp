@@ -1,4 +1,0 @@
-clepy
-coverage
-IPython
-jinja2
