@@ -1,0 +1,34 @@
+++++
+Carp
+++++
+
+Carp is for code templates.  It cuts down on typing, so you won't get
+CARP-al tunnel.  Harharhar.
+
+Examples
+========
+
+carp --define foo=matt --define bar=robot cliscript
+
+    Merges the template named cliscript with the definitions from the
+    command-line.
+
+    You either need to provide the path to the cliscript or it needs to
+    be one of the stored templates.
+
+carp-list
+    lists stored templates
+
+carp-store template-file
+    stores a template
+
+carp-inspect-template cliscript
+    dumps out the template and lists the required keys.
+
+Status
+======
+
+vaporware.
+
+
+.. vim: set syntax=rst:
