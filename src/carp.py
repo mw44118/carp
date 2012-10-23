@@ -29,13 +29,12 @@ def set_up_arguments():
     ap.add_argument('-D', '--define', nargs="+", metavar="N")
 
     ap.add_argument(
-        'carpfile',
+        'template',
         type=argparse.FileType('r'))
 
     return ap.parse_args()
 
-if __name__ == '__main__':
-
+def carp():
     args = set_up_arguments()
 
     logging.basicConfig(level=logging.DEBUG)
@@ -45,4 +44,46 @@ if __name__ == '__main__':
     j = jinja2.Template(args.carpfile.read())
 
     print(j.render(**defined_values))
+
+
+def walkup():
+
+    """
+    Yield paths closer and closer to the to of the filesystem.
+    """
+
+    path = os.getcwd()
+
+    at_top = False
+
+    while not at_top:
+        yield path
+        parent_path = os.path.dirname(path)
+        if parent_path == path:
+            at_top = True
+        else:
+            path = parent_path
+
+
+def find_carpdir():
+
+    for d in walkup():
+
+        if 'carpdir' in os.listdir(d):
+            return os.path.join(d, 'carpdir')
+
+
+def list_templates():
+
+    carpdir = find_carpdir()
+
+    if not carpdir:
+        print("no carpdir found")
+        return
+
+    else:
+
+        for tmpl in os.listdir(carpdir):
+
+            print('{0:20}'.format(tmpl))
 

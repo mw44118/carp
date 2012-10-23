@@ -8,27 +8,43 @@ CARP-al tunnel.  Harharhar.
 Examples
 ========
 
-carp --define foo=matt --define bar=robot cliscript
+Create a new script from a template
+-----------------------------------
 
-    Merges the template named cliscript with the definitions from the
-    command-line.
+::
 
-    You either need to provide the path to the cliscript or it needs to
-    be one of the stored templates.
+    $ carp --define foo=matt bar=robot script_template > script
 
-carp-list
-    lists stored templates
+Merges the template named script_template with the definitions from
+the command line.
 
-carp-store template-file
-    stores a template
+You either need to provide the path to the script_template or it
+needs to be one of the stored templates.
+
+List stored templates
+---------------------
+
+::
+
+    $ carp-list
+
+Lists the templates stored in the carpdir.
+
+Store a template
+----------------
+
+::
+
+    $ carp-store path-to-template
+
+Provide a name for the template, and it is stored!
 
 carp-inspect-template cliscript
     dumps out the template and lists the required keys.
 
-Status
-======
+Project status
+==============
 
 vaporware.
-
 
 .. vim: set syntax=rst:

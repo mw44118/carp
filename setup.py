@@ -15,16 +15,13 @@ setup(
     # All of these are available on pypi, but really, it is probably
     # smart to have local copies.
     install_requires=[
-        'clepy',
-        'coverage',
-        'IPython',
         'jinja2',
+        'PyYAML',
     ],
 
-    scripts=[
-        # 'src/ddsreminder/shell-scripts/run-dev-webapp',
-        # 'src/ddsreminder/shell-scripts/run-scratch-webapp',
-        # 'src/ddsreminder/shell-scripts/run-prod-webapp',
-    ],
-
+    entry_points={
+        "console_scripts": [
+            'carp = carp:carp',
+            'carp-list = carp:list_templates'
+        ]},
 )
