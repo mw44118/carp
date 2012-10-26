@@ -15,6 +15,7 @@ OK.
 """
 
 import argparse
+import glob
 import logging
 import os
 
@@ -83,7 +84,7 @@ def list_templates():
 
     else:
 
-        for tmpl in os.listdir(carpdir):
+        for tmpl in glob.glob('{0}/*.carp'.format(find_carpdir())):
 
             print('{0:20}'.format(tmpl))
 
