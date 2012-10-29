@@ -12,8 +12,6 @@ setup(
 
     package_dir={'': 'src'},
 
-    # All of these are available on pypi, but really, it is probably
-    # smart to have local copies.
     install_requires=[
         'jinja2',
         'PyYAML',
@@ -21,7 +19,10 @@ setup(
 
     entry_points={
         "console_scripts": [
-            'carp = carp:carp',
-            'carp-list = carp:list_templates'
+
+            'carp-list = carp:CarpLister.list_templates',
+            'carp-add = carp:CarpAdder.add_template',
+            'carp-render = carp.CarpRenderer.render',
+
         ]},
 )

@@ -2,49 +2,24 @@
 Carp
 ++++
 
-Carp is for code templates.  It cuts down on typing, so you won't get
-CARP-al tunnel.  Harharhar.
+Summary
+=======
 
-Examples
-========
+Carp is a utility for code templates, using jinja2_.  It cuts down on
+typing, so you won't get CARP-al tunnel.  Harharhar.
 
-Create a new script from a template
------------------------------------
+.. _jinja2: http://jinja2.pocoo.org
 
-::
+Example usage
+=============
 
-    $ carp --define foo=matt bar=robot script_template > script
+Try it like this::
 
-Merges the template named script_template with the definitions from
-the command line.
+    $ mkdir carpdir # your templates will go in here
+    $ carp-list # you will get nothing back, since you have no templates
+    $ carp-add some-file-that-already-exists
+    $ carp-list # now you will see that file
 
-You either need to provide the path to the script_template or it
-needs to be one of the stored templates.
 
-List stored templates
----------------------
-
-::
-
-    $ carp-list
-
-Lists the templates stored in the carpdir.
-
-Store a template
-----------------
-
-::
-
-    $ carp-store path-to-template
-
-Provide a name for the template, and it is stored!
-
-carp-inspect-template cliscript
-    dumps out the template and lists the required keys.
-
-Project status
-==============
-
-vaporware.
 
 .. vim: set syntax=rst:
