@@ -120,6 +120,15 @@ class TestCarp(unittest.TestCase):
 
         self.assertIn('boguslib.py', found_templates)
 
+        # Check the required variables for this template.
+
+        ci = carp.CarpInfoGetter()
+
+        required_variables = ci.get_info_on_template(
+            found_carpdir, 'boguslib.py')
+
+        self.assertEqual(set(['projname']), required_variables)
+
         # Now render the template!
 
         cr = carp.CarpRenderer()

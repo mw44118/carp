@@ -25,6 +25,7 @@ setup(
             'carp-list = carp:CarpLister.list_templates',
             'carp-add = carp:CarpAdder.add_template',
             'carp-render = carp:CarpRenderer.render',
+            'carp-info = carp:CarpInfoGetter.get_info',
 
         ]},
 )
