@@ -10,6 +10,7 @@ import shutil
 import clepy
 import jinja2
 
+logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('carp')
 
 class CarpLister(object):
@@ -72,6 +73,14 @@ class CarpAdder(object):
 
         return ap.parse_args()
 
+    @staticmethod
+    def find_carpdir():
+
+        for d in clepy.walkup():
+
+            if 'carpdir' in os.listdir(d):
+                return os.path.join(d, 'carpdir')
+
     @classmethod
     def add_template(cls):
 
@@ -97,19 +106,31 @@ class CarpAdder(object):
 
 class CarpRenderer(object):
 
+    @staticmethod
+    def find_carpdir():
+
+        for d in clepy.walkup():
+
+            if 'carpdir' in os.listdir(d):
+                return os.path.join(d, 'carpdir')
+
 
     def set_up_args(self):
 
         ap = argparse.ArgumentParser(
-            description='Render a template')
+            description='Render a stored template')
 
         ap.add_argument('--carpdir',
             help='Use this as the carp directory')
 
+        ap.add_argument('--define',
+            action='append',
+            metavar="key=value",
+            help='Define a value to use in the template, like '
+                'projname=foo.  Can use multiple times.')
+
         ap.add_argument('template',
             help='This is the template to render')
-
-        ap.add_argument('-D', '--define', nargs="+", metavar="N")
 
         return ap.parse_args()
 
@@ -121,14 +142,23 @@ class CarpRenderer(object):
 
         args = self.set_up_args()
 
-        defined_values = dict([s.split('=') for s in args.define])
+        carpdir = args.carpdir or self.find_carpdir()
 
-        print(self.render_template(args.template, defined_values))
+        log.debug('args.define is {0}.'.format(args.define))
+
+        defined_values = dict([s.split('=') for s in args.define]) \
+        if args.define else {}
+
+        print(self.render_template(carpdir, args.template,
+            defined_values))
 
 
-    def render_template(self, template, values):
+    def render_template(self, carpdir, template, values):
 
-        j = jinja2.Template(open(template).read())
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(carpdir),
+            undefined=jinja2.StrictUndefined)
+
+        j = env.get_template(template)
 
         return j.render(**values)
-

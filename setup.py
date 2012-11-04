@@ -12,6 +12,8 @@ setup(
 
     package_dir={'': 'src'},
 
+    py_modules=['carp'],
+
     install_requires=[
         'clepy',
         'jinja2',
@@ -22,7 +24,7 @@ setup(
 
             'carp-list = carp:CarpLister.list_templates',
             'carp-add = carp:CarpAdder.add_template',
-            'carp-render = carp.CarpRenderer.render',
+            'carp-render = carp:CarpRenderer.render',
 
         ]},
 )

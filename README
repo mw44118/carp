@@ -5,21 +5,21 @@ Carp
 Summary
 =======
 
-Carp is a utility for code templates, using jinja2_.  It cuts down on
-typing, so you won't get CARP-al tunnel.  Harharhar.
+Carp cuts down on typing, so you won't get CARP-al tunnel.  Harharhar.
 
-.. _jinja2: http://jinja2.pocoo.org
+
 
 Example usage
 =============
 
 Try it like this::
 
+    $ cd some-project-you-already-have
     $ mkdir carpdir # your templates will go in here
     $ carp-list # you will get nothing back, since you have no templates
     $ carp-add some-file-that-already-exists
     $ carp-list # now you will see that file
 
-
+.. _jinja2: http://jinja2.pocoo.org
 
 .. vim: set syntax=rst:

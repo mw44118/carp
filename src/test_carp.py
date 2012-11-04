@@ -124,7 +124,9 @@ class TestCarp(unittest.TestCase):
 
         cr = carp.CarpRenderer()
 
-        rendered_text = cr.render_template(found_templates[0],
+        rendered_text = cr.render_template(
+            found_carpdir,
+            found_templates[0],
             {'projname':'bogus'})
 
         # Compare what carp rendered vs what we get if we render it

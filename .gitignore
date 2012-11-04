@@ -2,3 +2,4 @@
 *.pyc
 src/carp.egg-info
 .coverage
+dist
