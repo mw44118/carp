@@ -7,81 +7,17 @@ import logging
 import os
 import shutil
 
+import clepy
 import jinja2
 
 log = logging.getLogger('carp')
-
-def set_up_arguments():
-
-    ap = argparse.ArgumentParser()
-
-    ap.add_argument('-D', '--define', nargs="+", metavar="N")
-
-    ap.add_argument(
-        'template',
-        type=argparse.FileType('r'))
-
-    return ap.parse_args()
-
-def carp():
-    args = set_up_arguments()
-
-    logging.basicConfig(level=logging.DEBUG)
-
-    defined_values = dict([s.split('=') for s in args.define])
-
-    j = jinja2.Template(args.carpfile.read())
-
-    print(j.render(**defined_values))
-
-
-def walkup():
-
-    """
-    Yield paths closer and closer to the to of the filesystem.
-    """
-
-    path = os.getcwd()
-
-    at_top = False
-
-    while not at_top:
-        yield path
-        parent_path = os.path.dirname(path)
-        if parent_path == path:
-            at_top = True
-        else:
-            path = parent_path
-
-
-def find_carpdir():
-
-    for d in walkup():
-
-        if 'carpdir' in os.listdir(d):
-            return os.path.join(d, 'carpdir')
-
-
-def list_templates():
-
-    carpdir = find_carpdir()
-
-    if not carpdir:
-        print("no carpdir found")
-        return
-
-    else:
-
-        for tmpl in glob.glob('{0}/*.carp'.format(find_carpdir())):
-
-            print('{0:20}'.format(tmpl))
 
 class CarpLister(object):
 
     @staticmethod
     def find_carpdir():
 
-        for d in walkup():
+        for d in clepy.walkup():
 
             if 'carpdir' in os.listdir(d):
                 return os.path.join(d, 'carpdir')
@@ -95,7 +31,6 @@ class CarpLister(object):
             help='Use this as the carp directory')
 
         return ap.parse_args()
-
 
     @classmethod
     def list_templates(cls):
@@ -112,9 +47,14 @@ class CarpLister(object):
 
         else:
 
-            for tmpl in os.listdir(carpdir):
-
+            for tmpl in self.yield_stored_templates(carpdir):
                 print('{0}'.format(os.path.basename(tmpl)))
+
+
+    def yield_stored_templates(self, carpdir):
+
+        for tmpl in os.listdir(carpdir):
+            yield(tmpl)
 
 
 class CarpAdder(object):
@@ -138,12 +78,25 @@ class CarpAdder(object):
         self = cls()
 
         args = self.set_up_args()
+
         carpdir = args.carpdir or self.find_carpdir()
 
-        shutil.copyfile(args.file_to_add, carpdir)
+        self.copy_template(args.file_to_add, carpdir)
+
+
+    def copy_template(self, file_to_add, carpdir):
+
+        basename = os.path.basename(file_to_add)
+
+        shutil.copyfile(
+            file_to_add,
+            os.path.join(
+                carpdir,
+                basename))
 
 
 class CarpRenderer(object):
+
 
     def set_up_args(self):
 
@@ -160,6 +113,7 @@ class CarpRenderer(object):
 
         return ap.parse_args()
 
+
     @classmethod
     def render(cls):
 
@@ -169,6 +123,12 @@ class CarpRenderer(object):
 
         defined_values = dict([s.split('=') for s in args.define])
 
-        j = jinja2.Template(args.carpfile.read())
+        print(self.render_template(args.template, defined_values))
 
-        print(j.render(**defined_values))
+
+    def render_template(self, template, values):
+
+        j = jinja2.Template(open(template).read())
+
+        return j.render(**values)
+

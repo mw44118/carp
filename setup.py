@@ -13,8 +13,8 @@ setup(
     package_dir={'': 'src'},
 
     install_requires=[
+        'clepy',
         'jinja2',
-        'PyYAML',
     ],
 
     entry_points={
