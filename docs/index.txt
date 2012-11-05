@@ -75,15 +75,37 @@ put it in a file::
 Future plans
 ============
 
-*   Pretty-up the error messaging when somebody forgets to define a
-    variable.
-
 *   Add descriptions and other metadata to templates.
 
 *   Support templates that are more than just a single file.  Allow
     templates to include folders and subfolders and files.
 
 *   Support command-line tab completion for template names.
+
+
+Boring stuff to do
+==================
+
+*   Pretty-up the error messaging when somebody forgets to define a
+    variable.
+
+*   Make it more obvious when a template requires no parameters.
+
+*   Add installation instructions to docs.
+
+*   Add a requirements.txt file to docs.
+
+*   Link to github repository from docs.
+
+*   Show output of scripts in docs.
+
+*   Show docstrings from modules in docs.
+
+*   Add more detail to setup.py so that stuff like project home page,
+    author, license, etc is all described.
+
+*   Add google analytics to docs.
+
 
 .. _jinja2: http://jinja2.pocoo.org
 .. _`hacker news`: http://news.ycombinator.org
