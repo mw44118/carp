@@ -1,22 +1,91 @@
 .. Carp documentation master file, created by
    sphinx-quickstart on Mon Nov  5 10:17:23 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+   You can adapt this file completely to your liking, but it should at
+   least contain the root `toctree` directive.
 
-Welcome to Carp's documentation!
-================================
+++++
+Carp
+++++
 
-Contents:
+Summary
+=======
 
-.. toctree::
-   :maxdepth: 2
+Carp cuts down on typing by letting you store code templates (using
+jinja2_) and then render them.
+
+I named this project carp because this project will save me from CARP-al
+tunnel.  Harharhar.
+
+Isn't this a bad idea?
+======================
+
+Yes.  Terrible idea.  Good programmers use libraries and inheritance and
+dynamic code generation and run-time message passing to shrink
+redundancy.
+
+Shitty programmers use copy-paste.  And only the worst programmer
+imaginable would ever design and use a copy-paste framework.
+
+This project is an abomination.
+
+Hurry back to `hacker news`_!
+
+Instructions
+============
+
+The first thing to do is make a directory named "carpdir" at
+the top of your project::
+
+    $ cd ~/src/my-awesome-project
+    $ mkdir carpdir
+
+That's where carp will store templates.
+
+Pick a file that you want to use as a template and copy it to some
+out-of-the-way place::
+
+    $ cp script.py /tmp/base_script.py
+
+Now edit that copy and replace the text that you want to be passed in as
+a parameter, by using double-curly braces, like this::
+
+    {{project_name}}
+
+Actually, you can use any jinja2_ tricks, because the files will be run
+as jinja2_ templates.
+
+Add this template like this::
+
+    $ carp-add /tmp/base_script.py
+
+You can get a list of required variables to pass in::
+
+    $ carp-info base_script.py
+
+And now you can render that template::
+
+    $ carp-render base_script.py --define project_name=bogus
+
+That will write a bunch of stuff to standard output, so use redirect to
+put it in a file::
+
+    $ carp-render base_script.py --define project_name=bogus > bogus_script.py
 
 
+Future plans
+============
 
-Indices and tables
-==================
+*   Pretty-up the error messaging when somebody forgets to define a
+    variable.
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+*   Add descriptions and other metadata to templates.
 
+*   Support templates that are more than just a single file.  Allow
+    templates to include folders and subfolders and files.
+
+*   Support command-line tab completion for template names.
+
+.. _jinja2: http://jinja2.pocoo.org
+.. _`hacker news`: http://news.ycombinator.org
+
+.. vim: set syntax=rst:

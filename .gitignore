@@ -3,3 +3,4 @@
 src/carp.egg-info
 .coverage
 dist
+_build
