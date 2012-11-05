@@ -18,10 +18,12 @@ Yes.  Terrible idea.  Good programmers use libraries and inheritance and
 dynamic code generation and run-time message passing to shrink
 redundancy.
 
-Shitty programmers use copy-paste.  And only the worst programmers would
-ever use a copy-paste framework.
+Shitty programmers use copy-paste.  And only the worst programmer
+imaginable would ever design and use a copy-paste framework.
 
-Now run along back to `hacker news`_ to all the other geniuses.
+This project is an abomination.
+
+Hurry back to `hacker news`_ to all the other geniuses!
 
 Instructions
 ============
@@ -63,6 +65,20 @@ That will write a bunch of stuff to standard output, so use redirect to
 put it in a file::
 
     $ carp-render base_script.py --define project_name=bogus > bogus_script.py
+
+
+Future plans
+============
+
+*   Pretty-up the error messaging when somebody forgets to define a
+    variable.
+
+*   Add descriptions and other metadata to templates.
+
+*   Support templates that are more than just a single file.  Allow
+    templates to include folders and subfolders and files.
+
+*   Support command-line tab completion for template names.
 
 .. _jinja2: http://jinja2.pocoo.org
 .. _`hacker news`: http://news.ycombinator.org
