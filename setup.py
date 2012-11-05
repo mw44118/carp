@@ -12,19 +12,20 @@ setup(
 
     package_dir={'': 'src'},
 
-    # All of these are available on pypi, but really, it is probably
-    # smart to have local copies.
+    py_modules=['carp'],
+
     install_requires=[
         'clepy',
-        'coverage',
-        'IPython',
         'jinja2',
     ],
 
-    scripts=[
-        # 'src/ddsreminder/shell-scripts/run-dev-webapp',
-        # 'src/ddsreminder/shell-scripts/run-scratch-webapp',
-        # 'src/ddsreminder/shell-scripts/run-prod-webapp',
-    ],
+    entry_points={
+        "console_scripts": [
 
+            'carp-list = carp:CarpLister.list_templates',
+            'carp-add = carp:CarpAdder.add_template',
+            'carp-render = carp:CarpRenderer.render',
+            'carp-info = carp:CarpInfoGetter.get_info',
+
+        ]},
 )

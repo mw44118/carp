@@ -2,33 +2,69 @@
 Carp
 ++++
 
-Carp is for code templates.  It cuts down on typing, so you won't get
-CARP-al tunnel.  Harharhar.
+Summary
+=======
 
-Stuff that works right now
-==========================
+Carp cuts down on typing by letting you store code templates (using
+jinja2_) and then render them.
 
-This really works::
+I named this project carp because this project will save me from CARP-al
+tunnel.  Harharhar.
 
-    $ python src/carp.py carpfiles/bogus.carp --define aaa=cat bbb=dog
+Isn't this a bad idea?
+======================
 
-That will put replace aaa with cat and bbb with dog.
+Yes.  Terrible idea.  Good programmers use libraries and inheritance and
+dynamic code generation and run-time message passing to shrink
+redundancy.
 
-Possible improvements
-=====================
+Shitty programmers use copy-paste.  And only the worst programmers would
+ever use a copy-paste framework.
 
-*   Install carp as a script in the path (edit setup.py).
+Now run along back to `hacker news`_ to all the other geniuses.
 
-*   List required variables for a carpfile.
+Instructions
+============
 
-*   Find carpfiles folder by searching up parent folders.
+The first thing to do is make a directory named "carpdir" at
+the top of your project::
 
-*   List carp templates inside the carpfiles folder.
+    $ cd ~/src/my-awesome-project
+    $ mkdir carpdir
 
-*   Store templates into the carpfiles folder (i.e., register
-    carpfiles, with descriptions, etc).
+That's where carp will store templates.
 
-*   Build projects with folders and files rather than just a single
-    file.
+Pick a file that you want to use as a template and copy it to some
+out-of-the-way place::
+
+    $ cp script.py /tmp/base_script.py
+
+Now edit that copy and replace the text that you want to be passed in as
+a parameter, by using double-curly braces, like this::
+
+    {{project_name}}
+
+Actually, you can use any jinja2_ tricks, because the files will be run
+as jinja2_ templates.
+
+Add this template like this::
+
+    $ carp-add /tmp/base_script.py
+
+You can get a list of required variables to pass in::
+
+    $ carp-info base_script.py
+
+And now you can render that template::
+
+    $ carp-render base_script.py --define project_name=bogus
+
+That will write a bunch of stuff to standard output, so use redirect to
+put it in a file::
+
+    $ carp-render base_script.py --define project_name=bogus > bogus_script.py
+
+.. _jinja2: http://jinja2.pocoo.org
+.. _`hacker news`: http://news.ycombinator.org
 
 .. vim: set syntax=rst:
