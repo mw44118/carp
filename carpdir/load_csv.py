@@ -60,7 +60,3 @@ if __name__ == '__main__':
         pgconn.commit()
 
     log.info("All done!")
-
-
-
-
