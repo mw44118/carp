@@ -10,7 +10,7 @@ import jinja2
 
 import carp
 
-class TestCarp(unittest.TestCase):
+class TestCarp1(unittest.TestCase):
 
     def setUp(self):
 
@@ -69,7 +69,6 @@ class TestCarp(unittest.TestCase):
 
         # This may not work on windows; patches welcome!
         shutil.rmtree(self.tempdir)
-
 
     def test_everything(self):
 
