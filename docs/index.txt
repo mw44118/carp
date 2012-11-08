@@ -60,9 +60,13 @@ a parameter, by using double-curly braces, like this::
     {{project_name}}
 
 Actually, you can use any jinja2_ tricks, because the files will be run
-as jinja2_ templates.
+as jinja2_ templates.  For example, you can use a filter to make sure
+something comes out as lower case like this::
 
-Add this template like this::
+    {{ project_name | lower }}
+
+Once you have replaced the text that you want to use as parameters, add
+this template like this::
 
     $ carp-add /tmp/base_script.py
 
@@ -80,8 +84,52 @@ put it in a file::
     $ carp-render base_script.py --define project_name=bogus > bogus_script.py
 
 
+Templates made of folders
+=========================
+
+You can have single-file templates, but you can also store trees of
+folders and files as templates too.
+
+Imagine you have a folder proj with a bunch of stuff inside and you want
+it to be a template::
+
+    $ find proj
+    proj/
+    proj/setup.py
+    proj/src
+    proj/src/proj
+    proj/src/proj/__init__.py
+
+You add folder templates just the same::
+
+    $ carp-add proj
+
+And carp-info works the same::
+
+    $ carp-info proj
+    proj required variables
+
+    *  projname
+
+But when you render a template that is a folder, you have to give me a
+folder to put it in, like this::
+
+    $ carp-render proj /tmp --define projname=scratch
+
+Now you'll see a folder /tmp/proj with all your stuff inside::
+
+    $ find /tmp/proj
+    /tmp/proj
+    /tmp/proj/setup.py
+    /tmp/proj/src
+    /tmp/proj/src/proj
+    /tmp/proj/src/proj/__init__.py
+
+
 Future plans
 ============
+
+*   Include a few built-in templates when you install carp.
 
 *   Allow names of files and folders to be parameterized.
 
@@ -94,7 +142,7 @@ Boring stuff to do
 ==================
 
 *   Pretty-up the error messaging when somebody forgets to define a
-    variable.
+    variable.  Right now, it just blows up.
 
 *   Add a requirements.txt file to docs for pip users.
 
