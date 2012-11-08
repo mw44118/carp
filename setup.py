@@ -4,7 +4,14 @@ setup(
 
     name='carp',
 
-    version='0.0.1',
+    version='0.0.2',
+
+    description="Code templating scripts",
+
+    author='W. Matthew Wilson',
+    author_email='matt@tplus1.com',
+    url='http://carp.readthedocs.org',
+    license='BSD',
 
     packages=find_packages('src'),
 
@@ -26,6 +33,5 @@ setup(
             'carp-add = carp:CarpAdder.add_template',
             'carp-render = carp:CarpRenderer.render',
             'carp-info = carp:CarpInfoGetter.get_info',
-
         ]},
 )

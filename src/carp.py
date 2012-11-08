@@ -11,7 +11,6 @@ import clepy
 import jinja2
 import jinja2.meta
 
-logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('carp')
 
 class CarpScript(object):
@@ -30,6 +29,17 @@ class CarpScript(object):
     def set_up_args(self):
         raise NotImplementedError
 
+    def template_is_a_single_file(self, carpdir, template_name):
+
+        return os.path.isfile(os.path.join(
+            carpdir,
+            template_name))
+
+    def template_is_a_folder(self, carpdir, template_name):
+
+        return os.path.isdir(os.path.join(
+            carpdir,
+            template_name))
 
 class CarpLister(CarpScript):
 
@@ -65,7 +75,14 @@ class CarpLister(CarpScript):
     def yield_stored_templates(self, carpdir):
 
         for tmpl in os.listdir(carpdir):
-            yield(tmpl)
+
+            if os.path.isdir(os.path.join(carpdir, tmpl)) \
+            and os.path.basename(tmpl) == '.svn':
+
+                continue
+
+            else:
+                yield(tmpl)
 
 
 class CarpAdder(CarpScript):
@@ -94,12 +111,30 @@ class CarpAdder(CarpScript):
 
         self.copy_template(args.file_to_add, carpdir)
 
-    def copy_template(self, file_to_add, carpdir):
+    def copy_template(self, thing_to_add, carpdir):
 
-        basename = os.path.basename(file_to_add)
+        if os.path.isfile(thing_to_add):
+            self.copy_single_file(thing_to_add, carpdir)
+
+        elif os.path.isdir(thing_to_add):
+            self.copy_folder(thing_to_add, carpdir)
+
+    def copy_single_file(self, single_file, carpdir):
+
+        basename = os.path.basename(single_file)
 
         shutil.copyfile(
-            file_to_add,
+            single_file,
+            os.path.join(
+                carpdir,
+                basename))
+
+    def copy_folder(self, folder, carpdir):
+
+        basename = os.path.basename(folder)
+
+        shutil.copytree(
+            folder,
             os.path.join(
                 carpdir,
                 basename))
@@ -124,6 +159,11 @@ class CarpRenderer(CarpScript):
         ap.add_argument('template',
             help='This is the template to render')
 
+        ap.add_argument('target',
+            help='This is the directory to copy stuff to.',
+            nargs='?',
+            default=None)
+
         return ap.parse_args()
 
     @classmethod
@@ -135,24 +175,63 @@ class CarpRenderer(CarpScript):
 
         carpdir = args.carpdir or self.find_carpdir()
 
-        log.debug('args.define is {0}.'.format(args.define))
-
         defined_values = dict([s.split('=') for s in args.define]) \
         if args.define else {}
 
         print(self.render_template(carpdir, args.template,
-            defined_values))
+            defined_values, args.target))
+
+    def render_template(self, carpdir, template, values, target=None):
+
+        if self.template_is_a_single_file(carpdir, template):
+
+            env = jinja2.Environment(
+                loader=jinja2.FileSystemLoader(carpdir),
+                undefined=jinja2.StrictUndefined)
+
+            j = env.get_template(template)
+
+            return j.render(**values)
+
+        elif self.template_is_a_folder(carpdir, template):
+
+            if not target:
+
+                raise TargetRequired("Provide a destination!")
+
+            else:
+                return self.render_folder(carpdir, template, values, target)
 
 
-    def render_template(self, carpdir, template, values):
+    def render_folder(self, carpdir, template, values, target):
 
-        env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(carpdir),
-            undefined=jinja2.StrictUndefined)
+        for dirpath, dirnames, filenames \
+        in os.walk(os.path.join(os.path.join(carpdir, template))):
 
-        j = env.get_template(template)
+            parts = dirpath.partition(carpdir)
 
-        return j.render(**values)
+            stripped_dirpath = parts[-1].lstrip('/')
+
+            target_dirpath = os.path.join(target, stripped_dirpath)
+
+            os.mkdir(target_dirpath)
+
+            for filename in filenames:
+
+                rendered_text = self.render_template(
+                    dirpath,
+                    filename,
+                    values)
+
+                with open(os.path.join(target_dirpath, filename), 'w') as f:
+                    f.write(rendered_text)
+
+            """
+            for dirname in dirnames:
+                os.mkdir(dirname)
+            """
+
+        return target
 
 
 class CarpInfoGetter(CarpScript):
@@ -179,15 +258,32 @@ class CarpInfoGetter(CarpScript):
 
         carpdir = args.carpdir or self.find_carpdir()
 
-        print("{0} required variables\n".format(args.template))
+        required_vars = self.get_info_on_template(carpdir,
+            args.template)
 
-        for var in self.get_info_on_template(
-            carpdir, args.template):
+        if not required_vars:
 
-            print("*  {0}".format(var))
+            print("{0} doesn't need any variables\n".format(
+                args.template))
+
+        else:
+
+            print("{0} required variables\n".format(args.template))
+
+            for var in required_vars:
+
+                print("*  {0}".format(var))
 
 
     def get_info_on_template(self, carpdir, template_name):
+
+        if self.template_is_a_single_file(carpdir, template_name):
+            return self.get_info_on_single_file(carpdir, template_name)
+
+        elif self.template_is_a_folder(carpdir, template_name):
+            return self.get_info_on_folder(carpdir, template_name)
+
+    def get_info_on_single_file(self, carpdir, template_name):
 
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(carpdir),
@@ -199,3 +295,22 @@ class CarpInfoGetter(CarpScript):
 
         return jinja2.meta.find_undeclared_variables(ast)
 
+    def get_info_on_folder(self, carpdir, template_name):
+
+        required_variables = set([])
+
+        for dirpath, dirnames, filenames \
+        in os.walk(os.path.join(carpdir, template_name)):
+
+            for f in filenames:
+                for var in self.get_info_on_single_file(dirpath, f):
+                    required_variables.add(var)
+
+        return required_variables
+
+class TargetRequired(ValueError):
+
+    """
+    You can not render a directory template without specifying where it
+    goes.
+    """

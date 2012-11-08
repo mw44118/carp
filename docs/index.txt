@@ -25,8 +25,21 @@ This project is an abomination.
 
 Hurry back to `hacker news`_!
 
-Instructions
+Installation
 ============
+
+You can use easy_install::
+
+    $ easy_install carp
+
+Or you can get the source from github here::
+
+    $ git clone https://github.com/mw44118/carp.git
+    $ cd carp
+    $ python setup.py install
+
+Usage
+=====
 
 The first thing to do is make a directory named "carpdir" at
 the top of your project::
@@ -70,10 +83,9 @@ put it in a file::
 Future plans
 ============
 
-*   Add descriptions and other metadata to templates.
+*   Allow names of files and folders to be parameterized.
 
-*   Support templates that are more than just a single file.  Allow
-    templates to include folders and subfolders and files.
+*   Add descriptions and other metadata to templates.
 
 *   Support command-line tab completion for template names.
 
@@ -81,18 +93,10 @@ Future plans
 Boring stuff to do
 ==================
 
-*   Ignore .svn folders inside carpdir.
-
 *   Pretty-up the error messaging when somebody forgets to define a
     variable.
 
-*   Make it more obvious when a template requires no parameters.
-
-*   Add installation instructions to docs.
-
-*   Add a requirements.txt file to docs.
-
-*   Add link to github repository to docs.
+*   Add a requirements.txt file to docs for pip users.
 
 *   Show output of scripts in docs.
 
