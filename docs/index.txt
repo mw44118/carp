@@ -32,7 +32,7 @@ You can use easy_install::
 
     $ easy_install carp
 
-Or you can get the source from github here::
+Or you can get the source from github here_::
 
     $ git clone https://github.com/mw44118/carp.git
     $ cd carp
@@ -49,7 +49,17 @@ the top of your project::
 
 That's where carp will store templates.
 
-Pick a file that you want to use as a template and copy it to some
+Now you can ask carp what templates are available.  Since you haven't
+stored any templates yet, you won't get anything back though::
+
+    $ carp-list
+    no carpdir found!
+
+    $ mkdir carpdir
+
+    $ carp-list
+
+Next, pick a file that you want to use as a template and copy it to some
 out-of-the-way place::
 
     $ cp script.py /tmp/base_script.py
@@ -73,6 +83,12 @@ this template like this::
 You can get a list of required variables to pass in::
 
     $ carp-info base_script.py
+    base_script.py required variables
+
+    *   project_name
+
+That tells you that you have to pass in a project_name variable when you
+render the base_script.py template.
 
 And now you can render that template::
 
@@ -146,17 +162,10 @@ Boring stuff to do
 
 *   Add a requirements.txt file to docs for pip users.
 
-*   Show output of scripts in docs.
-
 *   Show docstrings from modules in docs.
-
-*   Add more detail to setup.py so that stuff like project home page,
-    author, license, etc is all described.
-
-*   Add google analytics to docs.
-
 
 .. _jinja2: http://jinja2.pocoo.org
 .. _`hacker news`: http://news.ycombinator.org
+.. _here: http://github.com/mw44118/carp
 
 .. vim: set syntax=rst:
