@@ -147,8 +147,6 @@ Future plans
 
 *   Include a few built-in templates when you install carp.
 
-*   Allow names of files and folders to be parameterized.
-
 *   Add descriptions and other metadata to templates.
 
 *   Support command-line tab completion for template names.
