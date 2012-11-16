@@ -155,10 +155,13 @@ Future plans
 Boring stuff to do
 ==================
 
+*   Add a --version command-line option to all the scripts.
+
 *   Pretty-up the error messaging when somebody forgets to define a
     variable.  Right now, it just blows up.
 
-*   Add a requirements.txt file to docs for pip users.
+*   Add a requirements.txt file to docs for pip users.  Is this
+    necessary?
 
 *   Show docstrings from modules in docs.
 
