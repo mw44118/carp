@@ -317,7 +317,7 @@ class TestCarpFolderTree(unittest.TestCase):
             rendered_text = cr.render_template(
                 found_carpdir,
                 'bogusproject',
-                {})
+                {'projname':'BogusProject'})
 
         # But it should succeed when you provide a place to render to.
 
@@ -344,6 +344,171 @@ class TestCarpFolderTree(unittest.TestCase):
         self.assertTrue(os.path.isfile(os.path.join(
             self.tempdir3, 'bogusproject', 'src', 'bogusproject',
             '__init__.py')))
+
+class TestParameterizedFileNames(unittest.TestCase):
+
+    """
+    Verify that when I render a tree of files and folders, carp replaces
+    the file names when appropriate.
+    """
+
+    def setUp(self):
+
+        """
+        Make a carpdir.
+
+        Make a tree of files to copy in as a template.
+
+        The tree looks like this::
+
+            tempdir2/{{project_name}}/
+                setup.py
+
+        """
+
+        # tempdir1 holds the carpdir.
+        self.tempdir1 = tempfile.mkdtemp()
+        os.mkdir(os.path.join(self.tempdir1, 'carpdir'))
+
+        # tempdir2 holds the tree to be copied in.
+        self.tempdir2 = tempfile.mkdtemp()
+        os.mkdir(os.path.join(self.tempdir2, '{{project_name}}'))
+
+        setup_file = open(
+            os.path.join(
+                self.tempdir2,
+                '{{project_name}}',
+                'setup.py'),
+            'w')
+
+        setup_file.write(textwrap.dedent("""\
+
+            from setuptools import find_packages, setup
+
+            setup(
+
+                name='{{project_name}}',
+
+                version='0.0.1',
+
+                packages=find_packages('src'),
+
+                include_package_data=True,
+
+                package_dir={'': 'src'},
+
+                install_requires=[
+                ],
+            )
+            """))
+
+        setup_file.close()
+
+        # tempdir3 is where later I will render the tree.
+        self.tempdir3 = tempfile.mkdtemp()
+
+    def tearDown(self):
+
+        """
+        Clean up all the folders.
+        """
+
+        shutil.rmtree(self.tempdir1)
+        shutil.rmtree(self.tempdir2)
+        shutil.rmtree(self.tempdir3)
+
+    def test_1(self):
+
+        """
+        Render the new template and check the output.
+        """
+
+        os.chdir(self.tempdir1)
+
+        # Find the carp directory.
+
+        cl = carp.CarpLister()
+
+        found_carpdir = cl.find_carpdir()
+
+        # Make sure we have no templates already stored.
+
+        self.assertEqual(
+            found_carpdir,
+            os.path.join(
+                self.tempdir1,
+                'carpdir'))
+
+        found_templates = list(cl.yield_stored_templates(
+            found_carpdir))
+
+        self.assertFalse(found_templates)
+
+        # Add this template to carp.
+
+        ca = carp.CarpAdder()
+
+        ca.copy_template(
+            os.path.join(
+                self.tempdir2,
+                '{{project_name}}'),
+            found_carpdir)
+
+        self.assertTrue(os.path.isdir(os.path.join(
+            found_carpdir, '{{project_name}}')))
+
+        found_templates = list(cl.yield_stored_templates(
+            found_carpdir))
+
+        self.assertTrue(found_templates)
+        self.assertIn('{{project_name}}', found_templates)
+
+        # Check the required variables for this template.
+
+        ci = carp.CarpInfoGetter()
+
+        required_variables = ci.get_info_on_template(
+            found_carpdir, '{{project_name}}')
+
+        self.assertEqual(list(required_variables), ['project_name'])
+
+        # Render it!
+
+        cr = carp.CarpRenderer()
+
+        # Verify carp blows up when you don't pass in a target
+        # directory.
+
+        with self.assertRaises(carp.TargetRequired) as ex:
+
+            rendered_text = cr.render_template(
+                found_carpdir,
+                '{{project_name}}',
+                {'project_name':'BogusProject'},
+                )
+
+        # But it should succeed when you provide a place to render to.
+
+        print(self.tempdir1)
+        print(self.tempdir2)
+        print(self.tempdir3)
+
+        rendered_text = cr.render_template(
+            found_carpdir,
+            '{{project_name}}',
+            {'project_name':'BogusProject'},
+            self.tempdir3)
+
+        # Verify everything got rendered.
+
+        print os.listdir(os.path.join(self.tempdir3))
+
+        self.assertTrue(os.path.isdir(os.path.join(self.tempdir3,
+            'BogusProject')))
+
+        self.assertTrue(os.path.isfile(os.path.join(self.tempdir3,
+            'BogusProject', 'setup.py')))
+
 
 if __name__ == '__main__':
     unittest.main()

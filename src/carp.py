@@ -147,6 +147,7 @@ class CarpRenderer(CarpScript):
         ap = argparse.ArgumentParser(
             description='Render a stored template')
 
+
         ap.add_argument('--carpdir',
             help='Use this as the carp directory')
 
@@ -172,6 +173,7 @@ class CarpRenderer(CarpScript):
         self = cls()
 
         args = self.set_up_args()
+
 
         carpdir = args.carpdir or self.find_carpdir()
 
@@ -214,7 +216,9 @@ class CarpRenderer(CarpScript):
 
             target_dirpath = os.path.join(target, stripped_dirpath)
 
-            os.mkdir(target_dirpath)
+            rendered_target_dirpath = jinja2.Template(target_dirpath).render(**values)
+
+            os.mkdir(rendered_target_dirpath)
 
             for filename in filenames:
 
@@ -223,13 +227,12 @@ class CarpRenderer(CarpScript):
                     filename,
                     values)
 
-                with open(os.path.join(target_dirpath, filename), 'w') as f:
-                    f.write(rendered_text)
+                rendered_filename = jinja2.Template(filename).render(**values)
 
-            """
-            for dirname in dirnames:
-                os.mkdir(dirname)
-            """
+                with open(os.path.join(
+                    rendered_target_dirpath, rendered_filename), 'w') as f:
+
+                    f.write(rendered_text)
 
         return target
 
@@ -241,6 +244,9 @@ class CarpInfoGetter(CarpScript):
         ap = argparse.ArgumentParser(
             description='Get information on a stored template')
 
+        ap.add_argument('--log-level', default='ERROR',
+            choices=['DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL'])
+
         ap.add_argument('--carpdir',
             help='Use this as the carp directory')
 
@@ -249,12 +255,15 @@ class CarpInfoGetter(CarpScript):
 
         return ap.parse_args()
 
+
     @classmethod
     def get_info(cls):
 
         self = cls()
 
         args = self.set_up_args()
+
+        logging.basicConfig(level=args.log_level)
 
         carpdir = args.carpdir or self.find_carpdir()
 
@@ -295,6 +304,7 @@ class CarpInfoGetter(CarpScript):
 
         return jinja2.meta.find_undeclared_variables(ast)
 
+
     def get_info_on_folder(self, carpdir, template_name):
 
         required_variables = set([])
@@ -303,10 +313,20 @@ class CarpInfoGetter(CarpScript):
         in os.walk(os.path.join(carpdir, template_name)):
 
             for f in filenames:
+
+                for var in self.get_required_variables_from_file_name(carpdir, f):
+                    required_variables.add(var)
+
                 for var in self.get_info_on_single_file(dirpath, f):
                     required_variables.add(var)
 
         return required_variables
+
+    def get_required_variables_from_file_name(self, carpdir, file_name):
+
+        env = jinja2.Environment()
+        ast = env.parse(file_name)
+        return jinja2.meta.find_undeclared_variables(ast)
 
 class TargetRequired(ValueError):
 
