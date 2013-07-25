@@ -2,7 +2,6 @@
 
 import abc
 import argparse
-import collections
 import logging
 import os
 import shutil
@@ -11,7 +10,7 @@ import clepy
 import jinja2
 import jinja2.meta
 
-log = logging.getLogger('carp')
+log = logging.getLogger(__name__)
 
 class CarpScript(object):
 
@@ -334,3 +333,30 @@ class TargetRequired(ValueError):
     You can not render a directory template without specifying where it
     goes.
     """
+
+class CarpHelpGetter(CarpScript):
+
+    def set_up_args(self):
+
+        ap = argparse.ArgumentParser(
+            description='List all the carp commands')
+
+        return ap.parse_args()
+
+
+    @classmethod
+    def get_help(cls):
+
+        self = cls()
+
+        args = self.set_up_args()
+
+        for cmd_name in [
+            'carp-list',
+            'carp-add',
+            'carp-render',
+            'carp-info',
+            'carp-help',
+        ]:
+
+            print(cmd_name)
